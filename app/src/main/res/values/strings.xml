@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">ContentProviderView</string>
+    <string name="foxes">foxes</string>
+    <string name="badgers">badgers</string>
+    <string name="last_sync">Last sync:</string>
+    <string name="type"><u>Type:</u></string>
+    <string name="name"><u>Name:</u></string>
+    <string name="age"><u>Age:</u></string>
 </resources>
