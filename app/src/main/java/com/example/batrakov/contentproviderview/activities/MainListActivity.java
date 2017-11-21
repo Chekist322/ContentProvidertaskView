@@ -1,7 +1,10 @@
 package com.example.batrakov.contentproviderview.activities;
 
 import android.annotation.TargetApi;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -48,16 +51,26 @@ public class MainListActivity extends AppCompatActivity {
     private static final String[] TARGET_TABLE_COLUMNS_NAME = {"_id", "name"};
     private static final int[] TARGET_LIST_ITEM_VIEWS = {android.R.id.text1, android.R.id.text2};
     private static final String SAVED_TIME_STAMP = "time stamp";
-    private Uri mCurrentListContentUri;
+    private Uri mCurrentListContentUri = Uri.EMPTY;
 
     private TextView mTimeStamp;
     private ListView mListView;
+    private SimpleCursorAdapter mFoxesCursorAdapter;
+    private SimpleCursorAdapter mBadgersCursorAdapter;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle aSavedInstanceState) {
         super.onCreate(aSavedInstanceState);
         setContentView(R.layout.main_list_layout);
+
+        mFoxesCursorAdapter = new SimpleCursorAdapter(getApplicationContext(),
+                android.R.layout.simple_list_item_2,
+                null, TARGET_TABLE_COLUMNS_NAME, TARGET_LIST_ITEM_VIEWS, 0);
+
+        mBadgersCursorAdapter = new SimpleCursorAdapter(getApplicationContext(),
+                android.R.layout.simple_list_item_2,
+                null, TARGET_TABLE_COLUMNS_NAME, TARGET_LIST_ITEM_VIEWS, 0);
 
         Button foxesButton = findViewById(R.id.foxes);
         Button badgersButton = findViewById(R.id.badgers);
@@ -75,7 +88,8 @@ public class MainListActivity extends AppCompatActivity {
                 try {
                     loadListFromDB(FOXES_URI);
                 } catch (SecurityException aE) {
-                    Toast.makeText(getApplicationContext(), "Sorry, you have no permission for this :(", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Sorry, you have no permission for this :(", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -87,7 +101,8 @@ public class MainListActivity extends AppCompatActivity {
                 try {
                     loadListFromDB(BADGERS_URI);
                 } catch (SecurityException aE) {
-                    Toast.makeText(getApplicationContext(), "Sorry, you have no permission for this :(", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Sorry, you have no permission for this :(", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -101,6 +116,39 @@ public class MainListActivity extends AppCompatActivity {
                 startActivity(startDetailActivityIntent);
             }
         });
+
+        getLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int aId, Bundle aArgs) {
+                return new CursorLoader(getApplicationContext(), FOXES_URI, null, null, null, null);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> aLoader, Cursor aCursor) {
+                mFoxesCursorAdapter.swapCursor(aCursor);
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> aLoader) {
+            }
+        });
+
+        getLoaderManager().initLoader(1, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int aId, Bundle aArgs) {
+                return new CursorLoader(getApplicationContext(), BADGERS_URI, null, null, null, null);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> aLoader, Cursor aData) {
+                mBadgersCursorAdapter.swapCursor(aData);
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> aLoader) {
+            }
+        });
+
     }
 
     @Override
@@ -114,25 +162,20 @@ public class MainListActivity extends AppCompatActivity {
      * Send request to Database and fill ListView by incoming information.
      *
      * @param aUri target Uri query.
+     *
+     * @throws SecurityException on content provider permission deny.
      */
     private void loadListFromDB(Uri aUri) throws SecurityException {
-        Cursor cursor = getContentResolver().query(aUri, null, null,
-                null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            if (cursor.getCount() == 0) {
-                Toast.makeText(this, getString(R.string.empty), Toast.LENGTH_SHORT).show();
-            }
-            SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(getApplicationContext(),
-                    android.R.layout.simple_list_item_2,
-                    cursor, TARGET_TABLE_COLUMNS_NAME, TARGET_LIST_ITEM_VIEWS, 0);
-            mListView.setAdapter(cursorAdapter);
+        Date currentTime = Calendar.getInstance().getTime();
+        String timeStamp = currentTime.toString();
+        mTimeStamp.setText(timeStamp);
 
-            Date currentTime = Calendar.getInstance().getTime();
-            String timeStamp = currentTime.toString();
-            mTimeStamp.setText(timeStamp);
+        mCurrentListContentUri = aUri;
 
-            mCurrentListContentUri = aUri;
+        if (aUri.equals(FOXES_URI)) {
+            mListView.setAdapter(mFoxesCursorAdapter);
+        } else if (aUri.equals(BADGERS_URI)) {
+            mListView.setAdapter(mBadgersCursorAdapter);
         }
     }
 
