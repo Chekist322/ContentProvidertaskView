@@ -10,34 +10,40 @@ import android.widget.TextView;
 import com.example.batrakov.contentproviderview.R;
 
 /**
- * Created by batrakov on 15.11.17.
+ * Activity represents detail information about single element from MainActivity incoming list element.
  */
-
 public class DetailsActivity extends AppCompatActivity {
 
 
-    private TextView mType;
-    private TextView mName;
-    private TextView mAge;
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(@Nullable Bundle aSavedInstanceState) {
+        super.onCreate(aSavedInstanceState);
         setContentView(R.layout.details_layout);
 
-        mType = findViewById(R.id.type);
-        mName = findViewById(R.id.name);
-        mAge = findViewById(R.id.age);
+        TextView typeView = findViewById(R.id.type);
+        TextView nameView = findViewById(R.id.name);
+        TextView ageView = findViewById(R.id.age);
 
         int clickedElementPosition = (int) getIntent().getLongExtra(MainListActivity.CLICKED_ITEM_ID, -1);
 
         if (clickedElementPosition != -1) {
             Uri uri = getIntent().getParcelableExtra(MainListActivity.CHOSEN_TYPE_URI);
+
+            String type = uri.getLastPathSegment();
+
             uri = uri.buildUpon().appendPath(String.valueOf(clickedElementPosition)).build();
             Cursor cursor = getContentResolver().query(uri, null, null,
                     null, null);
-            cursor.moveToFirst();
-            System.out.println(cursor.getString(1));
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+
+                typeView.setText(type);
+                nameView.setText(cursor.getString(1));
+                ageView.setText(cursor.getString(2));
+                cursor.close();
+            }
+
         }
     }
 
