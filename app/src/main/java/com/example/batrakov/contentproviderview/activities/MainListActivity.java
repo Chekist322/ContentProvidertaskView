@@ -166,6 +166,7 @@ public class MainListActivity extends AppCompatActivity {
      * @throws SecurityException on content provider permission deny.
      */
     private void loadListFromDB(Uri aUri) throws SecurityException {
+
         Date currentTime = Calendar.getInstance().getTime();
         String timeStamp = currentTime.toString();
         mTimeStamp.setText(timeStamp);
@@ -178,6 +179,4 @@ public class MainListActivity extends AppCompatActivity {
             mListView.setAdapter(mBadgersCursorAdapter);
         }
     }
-
-
 }
