@@ -72,14 +72,23 @@ public class MainListActivity extends AppCompatActivity {
         foxesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View aView) {
-                loadListFromDB(FOXES_URI);
+                try {
+                    loadListFromDB(FOXES_URI);
+                } catch (SecurityException aE) {
+                    Toast.makeText(getApplicationContext(), "Sorry, you have no permission for this :(", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
         badgersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View aView) {
-                loadListFromDB(BADGERS_URI);
+                try {
+                    loadListFromDB(BADGERS_URI);
+                } catch (SecurityException aE) {
+                    Toast.makeText(getApplicationContext(), "Sorry, you have no permission for this :(", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -106,7 +115,7 @@ public class MainListActivity extends AppCompatActivity {
      *
      * @param aUri target Uri query.
      */
-    private void loadListFromDB(Uri aUri) {
+    private void loadListFromDB(Uri aUri) throws SecurityException {
         Cursor cursor = getContentResolver().query(aUri, null, null,
                 null, null);
         if (cursor != null) {
