@@ -6,5 +6,6 @@
     <string name="type"><u>Type:</u></string>
     <string name="name"><u>Name:</u></string>
     <string name="age"><u>Age:</u></string>
+    <string name="color"><u>Color:</u></string>
     <string name="empty">List is empty :(</string>
 </resources>

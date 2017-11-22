@@ -42,6 +42,18 @@
             android:textSize="24sp"
             android:textStyle="bold"/>
 
+        <TextView
+            android:id="@+id/color_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="@string/color"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="invisible"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -81,5 +93,17 @@
             android:isScrollContainer="true"
             android:text="@android:string/unknownName"
             android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:isScrollContainer="true"
+            android:text="@android:string/unknownName"
+            android:textSize="24sp"
+            android:visibility="invisible"/>
     </LinearLayout>
 </LinearLayout>

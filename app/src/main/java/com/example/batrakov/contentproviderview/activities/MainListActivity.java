@@ -151,13 +151,6 @@ public class MainListActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putString(SAVED_TIME_STAMP, mTimeStamp.getText().toString()).apply();
-        super.onDestroy();
-    }
-
     /**
      * Send request to Database and fill ListView by incoming information.
      *
@@ -170,6 +163,9 @@ public class MainListActivity extends AppCompatActivity {
         Date currentTime = Calendar.getInstance().getTime();
         String timeStamp = currentTime.toString();
         mTimeStamp.setText(timeStamp);
+
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putString(SAVED_TIME_STAMP, mTimeStamp.getText().toString()).apply();
 
         mCurrentListContentUri = aUri;
 
