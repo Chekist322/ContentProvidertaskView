@@ -2,6 +2,7 @@ package com.example.batrakov.contentproviderview.activities;
 
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -66,6 +67,14 @@ public class MainListActivity extends AppCompatActivity {
         mTimeStamp = findViewById(R.id.timeStamp);
         ListView foxesListView = findViewById(R.id.list_foxes);
         ListView badgersListView = findViewById(R.id.list_badgers);
+
+        findViewById(R.id.hack).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View aView) {
+                hack();
+            }
+        });
+
 
         TabHost tabHost = findViewById(R.id.tab_host);
         tabHost.setup();
@@ -163,6 +172,13 @@ public class MainListActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void hack() {
+
+        Uri uri = FOXES_URI.buildUpon().appendPath("1").build();
+        // 1 = 1; delete from foxes; delete from foxes where 1 = 1  " AND " + DBContract.Entry._ID + " = " + id;
+        getContentResolver().query(uri, null, "_id = 1; drop table *; delete from foxes where _id = 1", null, null);
     }
 
 //    /**
